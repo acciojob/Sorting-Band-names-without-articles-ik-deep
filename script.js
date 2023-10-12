@@ -16,19 +16,39 @@ const bands = [
     "An Old Dog"
 ];
 
-/**
- * 我們希望排序的時候能略過一些關鍵字
- **/
-function strip (word) {
-    let regex = new RegExp('^(a |the |an )', 'i')
-    return word.replace(regex, '').trim()
+// Function to sort the array while excluding articles
+function sortBandNames(bandNames) {
+    return bandNames.sort((a, b) => {
+        const articles = ['a', 'an', 'the'];
+        
+        const stripArticle = (name) => {
+            for (const article of articles) {
+                const regex = new RegExp(`^${article}\\s`, 'i');
+                name = name.replace(regex, '');
+            }
+            return name;
+        };
+        
+        const nameA = stripArticle(a).toLowerCase();
+        const nameB = stripArticle(b).toLowerCase();
+
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+    });
 }
 
-const sortedBands = bands.sort((a, b) => (strip(a) > strip(b)) ? 1 : -1)
+// Your array of band names
 
+// Sort the array without articles
+bandNames = sortBandNames(bands);
 
-/** 
- * add ul list in HTML
- **/
-document.querySelector('#bands').innerHTML = 
-    sortedBands.map(item => `<li>${item}</li>`).join('')
+// Get the ul element with the id 'band'
+const ulElement = document.getElementById('brands');
+
+// Create and append list items
+for (const name of bandNames) {
+    const liElement = document.createElement('li');
+    liElement.textContent = name;
+    ulElement.appendChild(liElement);
+}
